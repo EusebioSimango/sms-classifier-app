@@ -38,7 +38,7 @@ Permissões `RECEIVE_SMS` e `READ_SMS` em tempo de execução; `BroadcastReceive
 
 Entidade Room, SQLCipher, WorkManager quando chega um SMS.
 
-**Estado:** pendente. A persistência actual é só em memória de processo (`InMemorySmsRepository`).
+**Estado:** concluída. Os SMS ficam em Room com SQLCipher; a chegada dispara WorkManager (sem PII no *input*). A UI continua a ler `SmsRepository`.
 
 ### Fase 3 — Pré-processamento de texto (12/10 a 15/10/2026) · RF-03, RNF-05
 

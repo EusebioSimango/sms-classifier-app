@@ -4,16 +4,30 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import kotlinx.coroutines.launch
 import mz.feng.smsclassifier.BuildConfig
 import mz.feng.smsclassifier.SmsClassifierApp
+import mz.feng.smsclassifier.data.PersistSmsWorker
 
 class SmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val sms = SmsParser.fromReceivedIntent(intent) ?: return
         val app = context.applicationContext as SmsClassifierApp
-        app.smsRepository.addIncoming(sms)
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "SMS received")
+        val pending = goAsync()
+        app.applicationScope.launch {
+            try {
+                app.smsRepository.addIncoming(sms)
+                PersistSmsWorker.enqueue(app)
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "SMS received")
+                }
+            } catch (_: Exception) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "SMS persist failed")
+                }
+            } finally {
+                pending.finish()
+            }
         }
     }
 

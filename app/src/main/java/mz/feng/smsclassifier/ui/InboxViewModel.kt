@@ -14,7 +14,9 @@ import mz.feng.smsclassifier.sms.SmsPermissions
 import mz.feng.smsclassifier.sms.groupBySender
 
 class InboxViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = (application as SmsClassifierApp).smsRepository
+    private val app = application as SmsClassifierApp
+    private val repository = app.smsRepository
+    private val inboxSync = app.inboxSync
     private val hasPermission = MutableStateFlow(SmsPermissions.areGranted(application))
     private val selectedSender = MutableStateFlow<String?>(null)
 
@@ -38,7 +40,13 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
         val granted = SmsPermissions.areGranted(getApplication())
         hasPermission.value = granted
         if (granted) {
-            viewModelScope.launch { repository.loadInbox() }
+            viewModelScope.launch {
+                try {
+                    inboxSync.sync()
+                } catch (_: Exception) {
+                    // Mantém o que já está na base local.
+                }
+            }
         }
     }
 

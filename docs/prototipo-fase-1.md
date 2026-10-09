@@ -1,4 +1,4 @@
-# Protótipo actual (Fase 1 e extensões)
+# Protótipo actual (Fases 1–2 e extensões)
 
 ## Objectivo
 
@@ -6,11 +6,12 @@ Permitir, num dispositivo Android de teste, pedir permissões de SMS, ler mensag
 
 ## Arquitectura
 
-Adopta-se MVVM simples, como previsto no plano, sem *framework* de injecção de dependências (Hilt). A separação de responsabilidades antecipa a Fase 2: a interface `SmsRepository` pode passar a uma implementação Room + SQLCipher sem reescrever os ecrãs.
+Adopta-se MVVM simples, como previsto no plano, sem *framework* de injecção de dependências (Hilt). A interface `SmsRepository` é implementada por Room + SQLCipher; os ecrãs não dependem da persistência.
 
 ```
-SmsReceiver → SmsParser → SmsRepository.addIncoming
-InboxViewModel → SmsRepository.loadInbox / messages
+SmsReceiver → SmsParser → SmsRepository.addIncoming → Room/SQLCipher
+SmsReceiver → WorkManager (sem PII) → InboxSync
+InboxViewModel → InboxSync / SmsRepository.messages
 Compose (InboxRoute) → PermissionGateScreen | SenderListScreen | SenderThreadScreen
 ```
 
@@ -18,8 +19,9 @@ Compose (InboxRoute) → PermissionGateScreen | SenderListScreen | SenderThreadS
 | --- | --- |
 | `SmsParser` | Transforma o `Intent` `SMS_RECEIVED` num `IncomingSms`. |
 | `InboxSmsReader` | Lê a caixa de entrada do sistema (`Telephony.Sms.Inbox`), no máximo 100 mensagens. |
-| `InMemorySmsStore` | Lista em memória (processo). |
-| `SmsRepository` | Contrato: observar mensagens, carregar inbox, acrescentar SMS ao vivo. |
+| `RoomSmsRepository` | Persiste e observa SMS na base cifrada. |
+| `InboxSync` | Importa a caixa do sistema para o repositório. |
+| `SmsRepository` | Contrato: observar, acrescentar um SMS, *upsert* em lote. |
 | `InboxViewModel` | Permissão, carregamento, remetente seleccionado; deriva conversas com `groupBySender`. |
 | `InboxRoute` | Encadeia os três ecrãs. |
 
@@ -27,7 +29,7 @@ O `SmsReceiver` está exportado no manifesto e protegido com `android.permission
 
 ## O que está fora do plano original e porquê
 
-1. **Lista da caixa de entrada.** O entregável da Fase 1 era apenas o SMS *novo* no Logcat. A leitura com `READ_SMS` permite demonstrar o protótipo sem esperar por tráfego. Não substitui a persistência da Fase 2: ao matar o processo, a lista em memória perde-se; a caixa do sistema continua a poder ser relida.
+1. **Lista da caixa de entrada.** O entregável da Fase 1 era apenas o SMS *novo* no Logcat. A leitura com `READ_SMS` importa até 100 mensagens para a base local (Fase 2).
 2. **Agrupamento por remetente.** A Fase 5 prevê agrupamento por **categoria** (resultado do classificador). O fio por remetente (por exemplo «Vodacom») é um extra de usabilidade. Remetentes com nomes distintos no Android (`Vodacom` versus `VM`) aparecem como conversas separadas.
 
 ## Privacidade e segurança já aplicadas
@@ -40,7 +42,7 @@ Alinhado com o processamento local (RNF do plano) e com o contexto académico:
 - `FLAG_SECURE` na `MainActivity` (o ecrã recente e as capturas do sistema não mostram o conteúdo das mensagens; ferramentas de captura do computador também podem falhar — comportamento esperado).
 - O receptor **não** regista remetente, corpo nem hora no Logcat. Em *debug* pode aparecer apenas a linha `SMS received`, sem dados pessoais.
 
-A encriptação da base de dados em disco (SQLCipher, RNF-07) **não** está implementada; a lista em RAM não é cifrada porque é necessária à apresentação.
+A base Room é cifrada com SQLCipher (RNF-07). A chave gera-se no dispositivo e guarda-se em `EncryptedSharedPreferences`. A lista em RAM, usada só para desenhar o ecrã, não é cifrada.
 
 ## Limitações conhecidas (úteis para o capítulo de discussão)
 

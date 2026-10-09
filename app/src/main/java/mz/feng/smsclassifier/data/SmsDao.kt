@@ -1,0 +1,19 @@
+package mz.feng.smsclassifier.data
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface SmsDao {
+    @Query("SELECT * FROM sms ORDER BY receivedAtMillis DESC")
+    fun observeAll(): Flow<List<SmsEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(entity: SmsEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(entities: List<SmsEntity>)
+}
