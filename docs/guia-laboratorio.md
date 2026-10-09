@@ -36,10 +36,6 @@ O Play Protect recusa APKs com permissões de SMS vindos de fontes da Internet (
 
 Se a app instalar mas o interruptor de SMS estiver cinzento: Definições → Aplicações → Categorizador SMS → menu → **Permitir definições restritas**. Depois abrir a app e conceder `RECEIVE_SMS` e `READ_SMS`.
 
-## Duas aplicações no telemóvel
-
-O identificador passou de `mz.pycommunity.smsclassifier` para `mz.feng.smsclassifier`. O Android trata-as como aplicações distintas. Desinstalar a cópia antiga (PyCommunity) para evitar confusão na demonstração.
-
 ## Roteiro de teste (Fase 1)
 
 1. Abrir **Categorizador SMS** e conceder permissões, se pedidas.
