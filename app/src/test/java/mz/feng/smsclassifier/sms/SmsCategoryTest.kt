@@ -21,6 +21,28 @@ class SmsCategoryTest {
     }
 
     @Test
+    fun fromModelLabel_mapsAllModelClasses() {
+        val modelClasses = listOf(
+            "Bancário", "Carteira móvel", "Jogos e apostas", "Mensagens suspeitas",
+            "Operadora", "Outros", "Pessoal", "Publicidade",
+        )
+        assertEquals(
+            SmsCategory.entries.toSet(),
+            modelClasses.map { SmsCategory.fromModelLabel(it) }.toSet(),
+        )
+        assertEquals(SmsCategory.OTHER, SmsCategory.fromModelLabel("Desconhecida"))
+    }
+
+    @Test
+    fun categorizeThread_prefersStoredCategory() {
+        val thread = SenderThread(
+            sender = "M-Pesa",
+            messages = listOf(IncomingSms("M-Pesa", "Recebeu 250 MT", 1L, SmsCategory.SUSPICIOUS)),
+        )
+        assertEquals(SmsCategory.SUSPICIOUS, categorizeThread(thread))
+    }
+
+    @Test
     fun categorize_personalNumberGoesToPersonal() {
         assertEquals(
             SmsCategory.PERSONAL,

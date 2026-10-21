@@ -3,6 +3,7 @@ package mz.feng.smsclassifier.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +20,7 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
     private val app = application as SmsClassifierApp
     private val repository = app.smsRepository
     private val inboxSync = app.inboxSync
+    private val classifyPendingSms = app.classifyPendingSms
     private val themePreferences = app.themePreferences
     private val hasPermission = MutableStateFlow(SmsPermissions.areGranted(application))
     private val selectedSender = MutableStateFlow<String?>(null)
@@ -56,9 +58,10 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
         val granted = SmsPermissions.areGranted(getApplication())
         hasPermission.value = granted
         if (granted) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     inboxSync.sync()
+                    classifyPendingSms()
                 } catch (_: Exception) {
                     // Mantém o que já está na base local.
                 }

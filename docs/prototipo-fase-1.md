@@ -1,4 +1,4 @@
-# Protótipo actual (Fases 1–3 e extensões)
+# Protótipo actual (Fases 1–4 e extensões)
 
 ## Objectivo
 
@@ -44,6 +44,32 @@ texto → TextNormalizer → Tokenizer → filtro de stopwords → lista de toke
 
 Os marcadores reduzem o vocabulário (cada valor ou número diferente deixaria de ser uma palavra nova) e evitam que dados pessoais, como números de telefone, entrem no modelo. O treino da Fase 4 tem de aplicar exactamente as mesmas regras. Os pares de entrada e saída em `app/src/test/resources/nlp/preprocessing_cases.tsv` servem de teste de paridade entre Kotlin e Python.
 
+## Classificação local (Fase 4)
+
+O modelo foi treinado em Python (scikit-learn) com um *dataset* académico, separado das mensagens do telemóvel, e exportado para ONNX (`app/src/main/assets/models/modelo_sms_mocambique.onnx`, 380 KB). O ficheiro `.pkl` é um objecto Python serializado e não pode ser lido em Kotlin; serve apenas para retreinar e reexportar.
+
+| Aspecto | Valor |
+| --- | --- |
+| Pipeline | `TfidfVectorizer` (1 e 2 gramas, 6 048 termos) + `LinearSVC` |
+| Entrada | Texto em bruto do SMS, forma `[N, 1]` |
+| Classes | Bancário, Carteira móvel, Jogos e apostas, Mensagens suspeitas, Operadora, Outros, Pessoal, Publicidade |
+| Versão | `sms-mz-2026.10.10`, gravada em cada SMS |
+| Motor | ONNX Runtime para Android 1.31 (pacote completo, por causa da operação `com.microsoft.Tokenizer`) |
+
+```
+SmsReceiver / InboxSync → Room (SMS gravado, sem categoria)
+PersistSmsWorker / InboxViewModel → ClassifyPendingSms → OnnxSmsClassifier
+                                                     ↘ heurística, se o modelo falhar
+ClassifyPendingSms → Room (categoria, confiança, versão do modelo)
+```
+
+- A classificação corre num passo separado, depois de o SMS estar gravado. Uma falha do modelo nunca impede guardar a mensagem.
+- São reclassificados os SMS sem versão ou com uma versão diferente da actual. Assim, ao trocar o modelo, as mensagens antigas são reclassificadas automaticamente, e as que ficaram com a heurística voltam a ser tentadas.
+- A **confiança** é o *softmax* das margens do `LinearSVC`. Indica a força relativa da escolha entre as 8 classes, mas não é uma probabilidade calibrada.
+- A base passou para a versão 2 com uma migração que só acrescenta a coluna `modelVersion`, sem perder os SMS já guardados.
+
+O pré-processamento da Fase 3 **não** é aplicado antes da inferência: o grafo ONNX já inclui o seu próprio TF-IDF, treinado sobre o texto em bruto. Dar-lhe texto transformado produziria termos que o modelo nunca viu. O pacote `nlp` fica preparado para um retreino com marcadores e *stopwords*.
+
 ## O que está fora do plano original e porquê
 
 1. **Lista da caixa de entrada.** O entregável da Fase 1 era apenas o SMS *novo* no Logcat. A leitura com `READ_SMS` importa até 100 mensagens para a base local (Fase 2).
@@ -66,10 +92,14 @@ A base Room é cifrada com SQLCipher (RNF-07). A chave gera-se no dispositivo e 
 - O Google Play Protect bloqueia a instalação de APKs com `RECEIVE_SMS` / `READ_SMS` quando o ficheiro chega por WhatsApp, gestor de ficheiros ou browser. A instalação por USB (*Android Debug Bridge*) não sofre deste bloqueio. Ver [guia-laboratorio.md](guia-laboratorio.md).
 - No Android 13 e posteriores, após instalar fora da loja, pode ser necessário **Permitir definições restritas** antes de conceder SMS.
 - A aplicação não é a app de SMS predefinida e não escreve no fornecedor de SMS do sistema.
-- As categorias vêm de uma heurística provisória, não do classificador de PLN (Fase 4). Ainda não há correcção manual nem apagar dados persistidos.
+- Ainda não há correcção manual da categoria nem opção para apagar os dados guardados (Fase 6).
+- **Acentos no modelo ONNX:** o exportador `skl2onnx` substituiu o tokenizador do scikit-learn por `[a-zA-Z0-9_]+`. Por isso, 328 dos 6 048 termos com acentos (por exemplo `não` e `está`) nunca são reconhecidos no telemóvel, e as palavras de uma só letra passam a interromper os bigramas. Num teste com 7 SMS, as previsões do `.onnx` e do `.pkl` coincidiram, mas a diferença deve ser medida no conjunto de teste.
+- **Qualidade do modelo:** em testes rápidos, mensagens de publicidade e de apostas foram classificadas como `Pessoal`. A matriz de confusão do conjunto de teste deve entrar no capítulo de resultados.
+- **Tamanho do APK:** o ONNX Runtime completo acrescenta cerca de 34 MB por arquitectura. O APK de *debug* inclui apenas `arm64-v8a` (cerca de 60 MB). Uma compilação reduzida do ONNX Runtime, só com as operações usadas pelo modelo, fica para a Fase 8 (RNF-04).
 
 ## Versões de construção
 
 - `minSdk` 26, `compileSdk` / `targetSdk` 36
 - Android Gradle Plugin 8.13, Kotlin 2.3, Compose BOM 2026.06.01
+- ONNX Runtime para Android 1.31; ABI `arm64-v8a`
 - Versão da app: `0.1.0` (`versionCode` 1)

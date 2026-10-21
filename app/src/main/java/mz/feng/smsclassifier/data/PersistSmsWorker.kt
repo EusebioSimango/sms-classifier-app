@@ -16,6 +16,7 @@ class PersistSmsWorker(
         return try {
             val app = applicationContext as SmsClassifierApp
             app.inboxSync.sync()
+            app.classifyPendingSms()
             Result.success()
         } catch (_: Exception) {
             Result.retry()

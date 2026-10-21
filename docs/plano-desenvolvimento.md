@@ -50,13 +50,13 @@ Normalização, tokenização, *stopwords* em português (contexto moçambicano)
 
 Dataset académico separado das mensagens pessoais; treino em scikit-learn; inferência na app; versão do modelo; falha do modelo não impede guardar o SMS.
 
-**Estado:** pendente.
+**Estado:** concluída. O modelo (TF-IDF de 1 e 2 gramas + LinearSVC, 8 categorias) foi treinado em scikit-learn e exportado para ONNX. Na app corre com ONNX Runtime, depois de o SMS estar gravado, e guarda categoria, confiança e versão do modelo na base cifrada. Se o modelo falhar, aplica-se a heurística e tenta-se de novo na execução seguinte.
 
 ### Fase 5 — Interface por categorias, lista, pesquisa e detalhes (26/10 a 01/11/2026) · RF-07 a RF-10
 
 Ecrã de categorias com contagens; lista por categoria; detalhe; pesquisa por texto ou remetente.
 
-**Estado:** adiantada em parte. Há ecrãs de categorias, pesquisa e temas (heurística provisória, não o modelo). O detalhe por categoria de PLN do classificador continua pendente da Fase 4.
+**Estado:** adiantada em parte. Os ecrãs de categorias, pesquisa, detalhe e temas já usam a categoria gravada pelo modelo; a heurística só aparece enquanto um SMS não está classificado. Falta mostrar a confiança e rever a usabilidade.
 
 ### Fase 6 — Reclassificação, preferências e transparência (02/11 a 08/11/2026) · RF-11, RF-12, RF-13, RF-15, RF-17
 

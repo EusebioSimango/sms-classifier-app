@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import mz.feng.smsclassifier.sms.IncomingSms
+import mz.feng.smsclassifier.sms.SmsCategory
 
 @Entity(
     tableName = "sms",
@@ -18,6 +19,7 @@ data class SmsEntity(
     val receivedAtMillis: Long,
     val category: String? = null,
     val confidence: Float? = null,
+    val modelVersion: String? = null,
 )
 
 fun SmsEntity.toIncomingSms(): IncomingSms =
@@ -25,6 +27,8 @@ fun SmsEntity.toIncomingSms(): IncomingSms =
         sender = sender,
         body = body,
         receivedAtMillis = receivedAtMillis,
+        category = SmsCategory.fromStorage(category),
+        confidence = confidence,
     )
 
 fun IncomingSms.toEntity(): SmsEntity =

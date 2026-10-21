@@ -1,14 +1,23 @@
 package mz.feng.smsclassifier.sms
 
-enum class SmsCategory(val label: String) {
+enum class SmsCategory(val label: String, val modelLabel: String = label) {
     PERSONAL("Pessoal"),
     MOBILE_WALLET("Carteira móvel"),
     BANK("Bancário"),
     OPERATOR("Operadora"),
     OTHER("Outros"),
-    SUSPICIOUS("Suspeitas"),
+    SUSPICIOUS("Suspeitas", modelLabel = "Mensagens suspeitas"),
     ADS("Publicidade"),
     GAMBLING("Jogos e apostas"),
+    ;
+
+    companion object {
+        fun fromModelLabel(label: String): SmsCategory =
+            entries.firstOrNull { it.modelLabel == label } ?: OTHER
+
+        fun fromStorage(name: String?): SmsCategory? =
+            name?.let { stored -> entries.firstOrNull { it.name == stored } }
+    }
 }
 
 fun categorize(sms: IncomingSms): SmsCategory {
@@ -46,7 +55,7 @@ fun categorize(sms: IncomingSms): SmsCategory {
 }
 
 fun categorizeThread(thread: SenderThread): SmsCategory {
-    val votes = thread.messages.groupingBy { categorize(it) }.eachCount()
+    val votes = thread.messages.groupingBy { it.category ?: categorize(it) }.eachCount()
     return votes.maxByOrNull { it.value }?.key ?: SmsCategory.OTHER
 }
 

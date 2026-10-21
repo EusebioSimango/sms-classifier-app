@@ -16,4 +16,16 @@ interface SmsDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(entities: List<SmsEntity>)
+
+    @Query(
+        "SELECT * FROM sms WHERE modelVersion IS NULL OR modelVersion != :modelVersion " +
+            "ORDER BY receivedAtMillis DESC LIMIT :limit",
+    )
+    suspend fun pendingClassification(modelVersion: String, limit: Int): List<SmsEntity>
+
+    @Query(
+        "UPDATE sms SET category = :category, confidence = :confidence, " +
+            "modelVersion = :modelVersion WHERE id = :id",
+    )
+    suspend fun updateClassification(id: Long, category: String, confidence: Float?, modelVersion: String)
 }

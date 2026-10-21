@@ -4,6 +4,8 @@ import android.app.Application
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import mz.feng.smsclassifier.classifier.ClassifyPendingSms
+import mz.feng.smsclassifier.classifier.OnnxSmsClassifier
 import mz.feng.smsclassifier.data.AppDatabase
 import mz.feng.smsclassifier.data.DatabaseKeyStore
 import mz.feng.smsclassifier.data.RoomSmsRepository
@@ -22,6 +24,9 @@ class SmsClassifierApp : Application() {
     lateinit var inboxSync: InboxSync
         private set
 
+    lateinit var classifyPendingSms: ClassifyPendingSms
+        private set
+
     lateinit var themePreferences: ThemePreferences
         private set
 
@@ -29,10 +34,15 @@ class SmsClassifierApp : Application() {
         super.onCreate()
         themePreferences = ThemePreferences(this)
         val database = AppDatabase.create(this, DatabaseKeyStore(this))
-        smsRepository = RoomSmsRepository(database.smsDao())
+        val repository = RoomSmsRepository(database.smsDao())
+        smsRepository = repository
         inboxSync = InboxSync(
             reader = InboxSmsReader(this),
-            repository = smsRepository,
+            repository = repository,
+        )
+        classifyPendingSms = ClassifyPendingSms(
+            store = repository,
+            classifier = OnnxSmsClassifier(this),
         )
     }
 }
