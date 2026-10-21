@@ -44,7 +44,7 @@ Entidade Room, SQLCipher, WorkManager quando chega um SMS.
 
 Normalização, tokenização, *stopwords* em português (contexto moçambicano).
 
-**Estado:** pendente.
+**Estado:** concluída. O pacote `nlp` (Kotlin puro) converte o texto em *tokens*: minúsculas, remoção de acentos, marcadores para URL, valores em meticais, telefones e números, e filtro de *stopwords* a partir de `stopwords_pt_mz.txt`, ficheiro que o treino em Python da Fase 4 vai reutilizar. Coberto por testes JUnit.
 
 ### Fase 4 — Modelo de classificação local (16/10 a 25/10/2026) · RF-04, RF-05, RF-14, RNF-02, RNF-03, RNF-04, RNF-09, RNF-10
 
@@ -56,7 +56,7 @@ Dataset académico separado das mensagens pessoais; treino em scikit-learn; infe
 
 Ecrã de categorias com contagens; lista por categoria; detalhe; pesquisa por texto ou remetente.
 
-**Estado:** pendente. Existe já uma lista por **remetente**, que não substitui este entregável.
+**Estado:** adiantada em parte. Há ecrãs de categorias, pesquisa e temas (heurística provisória, não o modelo). O detalhe por categoria de PLN do classificador continua pendente da Fase 4.
 
 ### Fase 6 — Reclassificação, preferências e transparência (02/11 a 08/11/2026) · RF-11, RF-12, RF-13, RF-15, RF-17
 

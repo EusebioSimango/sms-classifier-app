@@ -1,4 +1,4 @@
-# Protótipo actual (Fases 1–2 e extensões)
+# Protótipo actual (Fases 1–3 e extensões)
 
 ## Objectivo
 
@@ -12,7 +12,8 @@ Adopta-se MVVM simples, como previsto no plano, sem *framework* de injecção de
 SmsReceiver → SmsParser → SmsRepository.addIncoming → Room/SQLCipher
 SmsReceiver → WorkManager (sem PII) → InboxSync
 InboxViewModel → InboxSync / SmsRepository.messages
-Compose (InboxRoute) → PermissionGateScreen | SenderListScreen | SenderThreadScreen
+Compose (InboxRoute) → PermissionGateScreen | MessagesHomeScreen | CategoriesScreen
+                       | CategoryDetailScreen | SearchScreen | SettingsScreen | SenderThreadScreen
 ```
 
 | Peça | Responsabilidade |
@@ -26,6 +27,22 @@ Compose (InboxRoute) → PermissionGateScreen | SenderListScreen | SenderThreadS
 | `InboxRoute` | Encadeia os três ecrãs. |
 
 O `SmsReceiver` está exportado no manifesto e protegido com `android.permission.BROADCAST_SMS`, de modo a só o sistema poder enviar o *broadcast*. Não é necessário ser a aplicação de SMS predefinida (`RoleManager`) para receber `SMS_RECEIVED`.
+
+## Pré-processamento de texto (Fase 3)
+
+O pacote `mz.feng.smsclassifier.nlp` não depende do Android, o que permite testá-lo na JVM e reproduzi-lo em Python.
+
+```
+texto → TextNormalizer → Tokenizer → filtro de stopwords → lista de tokens
+```
+
+| Passo | O que faz | Exemplo |
+| --- | --- | --- |
+| `TextNormalizer` | Minúsculas, sem acentos; URL, valores (`MT`, `MZN`), telefones MZ e números passam a marcadores; junta marcas com hífen. | `Recebeu 1.500,00MT` → `recebeu __money__` |
+| `Tokenizer` | Divide por espaço e descarta *tokens* de um carácter. | `pacote __num__ gb x` → `pacote`, `__num__`, `gb` |
+| `Stopwords` | Remove palavras funcionais lidas de `stopwords_pt_mz.txt`; mantém sinais de fraude como `nao` e `urgente`. | `nao partilhe o seu pin` → `nao`, `partilhe`, `pin` |
+
+Os marcadores reduzem o vocabulário (cada valor ou número diferente deixaria de ser uma palavra nova) e evitam que dados pessoais, como números de telefone, entrem no modelo. O treino da Fase 4 tem de aplicar exactamente as mesmas regras. Os pares de entrada e saída em `app/src/test/resources/nlp/preprocessing_cases.tsv` servem de teste de paridade entre Kotlin e Python.
 
 ## O que está fora do plano original e porquê
 
@@ -49,7 +66,7 @@ A base Room é cifrada com SQLCipher (RNF-07). A chave gera-se no dispositivo e 
 - O Google Play Protect bloqueia a instalação de APKs com `RECEIVE_SMS` / `READ_SMS` quando o ficheiro chega por WhatsApp, gestor de ficheiros ou browser. A instalação por USB (*Android Debug Bridge*) não sofre deste bloqueio. Ver [guia-laboratorio.md](guia-laboratorio.md).
 - No Android 13 e posteriores, após instalar fora da loja, pode ser necessário **Permitir definições restritas** antes de conceder SMS.
 - A aplicação não é a app de SMS predefinida e não escreve no fornecedor de SMS do sistema.
-- Não há categorias de PLN, pesquisa, correcção manual nem apagar dados persistidos.
+- As categorias vêm de uma heurística provisória, não do classificador de PLN (Fase 4). Ainda não há correcção manual nem apagar dados persistidos.
 
 ## Versões de construção
 

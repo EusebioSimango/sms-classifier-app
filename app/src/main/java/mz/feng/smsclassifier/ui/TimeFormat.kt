@@ -8,3 +8,8 @@ internal fun formatTimestamp(millis: Long): String =
     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         .withZone(ZoneId.systemDefault())
         .format(Instant.ofEpochMilli(millis))
+
+internal fun formatClock(millis: Long): String =
+    DateTimeFormatter.ofPattern("HH:mm")
+        .withZone(ZoneId.systemDefault())
+        .format(Instant.ofEpochMilli(millis))

@@ -1,31 +1,49 @@
 package mz.feng.smsclassifier.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import mz.feng.smsclassifier.settings.ThemeMode
+
+private val LightColors = lightColorScheme(
+    primary = LightPrimary,
+    onPrimary = LightOnPrimary,
+    background = LightBackground,
+    onBackground = LightOnBackground,
+    surface = LightSurface,
+    onSurface = LightOnBackground,
+    surfaceVariant = LightSurfaceVariant,
+    onSurfaceVariant = LightOnBackground,
+    outline = LightOutline,
+)
+
+private val DarkColors = darkColorScheme(
+    primary = DarkPrimary,
+    onPrimary = DarkOnPrimary,
+    background = DarkBackground,
+    onBackground = DarkOnBackground,
+    surface = DarkSurface,
+    onSurface = DarkOnBackground,
+    surfaceVariant = DarkSurfaceVariant,
+    onSurfaceVariant = DarkOnBackground,
+    outline = DarkOutline,
+)
 
 @Composable
 fun SmsClassifierTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> darkColorScheme()
-        else -> lightColorScheme()
+    val darkTheme = when (themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = if (darkTheme) DarkColors else LightColors,
         content = content,
     )
 }

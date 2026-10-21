@@ -1,0 +1,7 @@
+# texto de entrada<TAB>tokens esperados separados por espaco (exemplos anonimizados)
+Confirmado. Recebeu 1.500,00MT de 841234567 - JOAO. Saldo: 3.200,00 MT.	confirmado recebeu __money__ __phone__ joao saldo __money__
+e-Mola: Transferiu 200 MT para 861234567 em 21/10/26	emola transferiu __money__ __phone__ __num__ __num__ __num__
+Vodacom: Comprou pacote de 1GB por 50MT. Valido ate 22/10/2026.	vodacom comprou pacote __num__ gb __money__ valido __num__ __num__ __num__
+PROMOÇÃO! Ganhe 50% de desconto em www.loja.co.mz	promocao ganhe __num__ desconto __url__
+URGENTE: a sua conta M-Pesa foi bloqueada. Clique aqui https://bit.ly/x1y2	urgente conta mpesa bloqueada clique aqui __url__
+Não partilhe o seu PIN com ninguém	nao partilhe pin ninguem

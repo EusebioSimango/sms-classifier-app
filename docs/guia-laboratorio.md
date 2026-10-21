@@ -39,8 +39,9 @@ Se a app instalar mas o interruptor de SMS estiver cinzento: Definições → Ap
 ## Roteiro de teste (Fase 1)
 
 1. Abrir **Categorizador SMS** e conceder permissões, se pedidas.
-2. Verificar que a lista mostra conversas (remetente, pré-visualização, contagem).
-3. Abrir uma conversa (por exemplo um operador) e confirmar as mensagens desse remetente; voltar com **Voltar** ou o botão do sistema.
+2. Verificar a grelha de categorias e as mensagens recentes.
+3. Abrir uma categoria e uma conversa; voltar com **Voltar** ou o botão do sistema.
+3b. Em Definições, alternar Claro / Escuro e confirmar que a escolha se mantém ao reabrir.
 4. Enviar um SMS de teste para o número do dispositivo e confirmar que a conversa se actualiza (a app deve estar instalada e com permissão).
 5. No Logcat, filtrar `SmsReceiver`: não devem aparecer o corpo nem o número da mensagem.
 6. Fechar a app por completo e voltar a abrir: as conversas devem continuar (persistência local cifrada).
