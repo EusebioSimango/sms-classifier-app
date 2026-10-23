@@ -1,8 +1,8 @@
 # Categorizador SMS
 
-Protótipo Android de categorização automática de SMS com processamento local e offline. Trabalho de conclusão de curso (TCC) na Faculdade de Engenharia (FENG).
+Protótipo Android de categorização automática de SMS com processamento local e offline. Trabalho de conclusão de curso (TCC).
 
-Identificador da aplicação: `mz.feng.smsclassifier`.
+Identificador da aplicação: `mz.smsclassifier`.
 
 ## Compilar e instalar
 

@@ -1,6 +1,6 @@
 # Documentação de apoio à monografia
 
-Este directório descreve o protótipo Android **Categorizador SMS**, desenvolvido no âmbito de um trabalho de conclusão de curso (TCC) na Faculdade de Engenharia (FENG). O processamento é estritamente local e offline.
+Este directório descreve o protótipo Android **Categorizador SMS**, desenvolvido no âmbito de um trabalho de conclusão de curso (TCC). O processamento é estritamente local e offline.
 
 Os textos não substituem os capítulos da monografia. Servem como anexo técnico, memória de desenvolvimento e guião de reprodução em laboratório.
 
@@ -9,12 +9,11 @@ Os textos não substituem os capítulos da monografia. Servem como anexo técnic
 | Campo | Valor |
 | --- | --- |
 | Nome visível | Categorizador SMS |
-| `applicationId` / *namespace* | `mz.feng.smsclassifier` |
-| Instituição no identificador | FENG (Faculdade de Engenharia) |
+| `applicationId` / *namespace* | `mz.smsclassifier` |
 | Linguagem | Kotlin |
 | Interface | Jetpack Compose |
 
-O prefixo `mz.feng` segue a convenção de nomes invertidos (*reverse DNS*) usada em Android: país (`mz`) e unidade académica (`feng`). O produto (`smsclassifier`) distingue a aplicação no dispositivo.
+O identificador `mz.smsclassifier` segue a convenção de nomes invertidos (*reverse DNS*): país (`mz`) e produto (`smsclassifier`).
 
 ## Conteúdo
 

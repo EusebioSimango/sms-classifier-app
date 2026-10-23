@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "mz.feng.smsclassifier"
+    namespace = "mz.smsclassifier"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "mz.feng.smsclassifier"
+        applicationId = "mz.smsclassifier"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

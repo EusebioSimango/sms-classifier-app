@@ -2,7 +2,7 @@
 
 Última actualização: 21 de outubro de 2026.
 
-O Categorizador SMS é uma aplicação para Android que classifica mensagens SMS por categoria, inteiramente no telemóvel. Foi desenvolvida no âmbito de um trabalho de conclusão de curso na Faculdade de Engenharia (FENG).
+O Categorizador SMS é uma aplicação para Android que classifica mensagens SMS por categoria, inteiramente no telemóvel. Foi desenvolvida no âmbito de um trabalho de conclusão de curso.
 
 ## Que dados são tratados
 
@@ -25,4 +25,4 @@ Os dados ficam no telemóvel enquanto a aplicação estiver instalada. São apag
 
 ## Contacto
 
-Para questões sobre esta política, contactar o autor do trabalho através da Faculdade de Engenharia (FENG).
+Para questões sobre esta política, contactar o autor do trabalho.

@@ -2,7 +2,7 @@
 
 ## Objectivo
 
-Permitir, num dispositivo Android de teste, pedir permissões de SMS, ler mensagens já existentes na caixa de entrada, receber SMS novos e apresentá-los agrupados por remetente, **sem envio para a rede**. O identificador da aplicação é `mz.feng.smsclassifier`.
+Permitir, num dispositivo Android de teste, pedir permissões de SMS, ler mensagens já existentes na caixa de entrada, receber SMS novos e apresentá-los agrupados por remetente, **sem envio para a rede**. O identificador da aplicação é `mz.smsclassifier`.
 
 ## Arquitectura
 
@@ -30,7 +30,7 @@ O `SmsReceiver` está exportado no manifesto e protegido com `android.permission
 
 ## Pré-processamento de texto (Fase 3)
 
-O pacote `mz.feng.smsclassifier.nlp` não depende do Android, o que permite testá-lo na JVM e reproduzi-lo em Python.
+O pacote `mz.smsclassifier.nlp` não depende do Android, o que permite testá-lo na JVM e reproduzi-lo em Python.
 
 ```
 texto → TextNormalizer → Tokenizer → filtro de stopwords → lista de tokens
