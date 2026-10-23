@@ -122,6 +122,9 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
     fun openThread(sender: String) {
         composing.value = false
         selectedSender.value = sender
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.markRead(sender)
+        }
     }
 
     fun closeThread() {

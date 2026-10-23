@@ -16,7 +16,8 @@ class SmsReceiver : BroadcastReceiver() {
         val pending = goAsync()
         app.applicationScope.launch {
             try {
-                app.smsRepository.addIncoming(sms)
+                val incoming = sms.copy(unread = !VisibleConversation.isOpen(sms.sender))
+                app.smsRepository.addIncoming(incoming)
                 PersistSmsWorker.enqueue(app)
                 IncomingSmsNotifier.show(app, sms)
                 if (BuildConfig.DEBUG) {

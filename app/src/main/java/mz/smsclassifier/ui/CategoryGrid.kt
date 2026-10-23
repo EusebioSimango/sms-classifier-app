@@ -1,10 +1,12 @@
 package mz.smsclassifier.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -14,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
@@ -97,12 +100,25 @@ fun ThreadRow(
     ) {
         val name = contactName ?: thread.sender.ifBlank { "(sem remetente)" }
         val category = (thread.lastMessage.category ?: categorize(thread.lastMessage)).label
+        val unread = thread.unreadCount
+        val emphasis = if (unread > 0) FontWeight.Bold else FontWeight.Normal
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            ContactAvatar(photoUri = photoUri, size = 44.dp)
+            Box {
+                ContactAvatar(photoUri = photoUri, size = 44.dp)
+                if (unread > 0) {
+                    Badge(
+                        modifier = Modifier.align(Alignment.TopStart),
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ) {
+                        Text(if (unread > 9) "9+" else unread.toString())
+                    }
+                }
+            }
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -118,13 +134,13 @@ fun ThreadRow(
                                 append(" · $category")
                             }
                         },
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = emphasis),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f),
                     )
                     Text(
-                        text = formatClock(thread.lastMessage.receivedAtMillis),
+                        text = formatListStamp(thread.lastMessage.receivedAtMillis),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(start = 8.dp),
@@ -133,7 +149,7 @@ fun ThreadRow(
                 }
                 Text(
                     text = thread.lastMessage.body.replace('\n', ' ').asPreview(60),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = emphasis),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )

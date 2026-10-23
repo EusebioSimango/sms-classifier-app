@@ -66,7 +66,7 @@ ClassifyPendingSms → Room (categoria, confiança, versão do modelo)
 - A classificação corre num passo separado, depois de o SMS estar gravado. Uma falha do modelo nunca impede guardar a mensagem.
 - São reclassificados os SMS sem versão ou com uma versão diferente da actual. Assim, ao trocar o modelo, as mensagens antigas são reclassificadas automaticamente, e as que ficaram com a heurística voltam a ser tentadas.
 - A **confiança** é o *softmax* das margens do `LinearSVC`. Indica a força relativa da escolha entre as 8 classes, mas não é uma probabilidade calibrada.
-- A base passou para a versão 2 com a coluna `modelVersion` e para a versão 3 com `outgoing`. Cada migração só acrescenta uma coluna e mantém os SMS já guardados.
+- A base passou para a versão 2 com a coluna `modelVersion`, para a versão 3 com `outgoing` e para a versão 4 com `unread`. Cada migração só acrescenta uma coluna e mantém os SMS já guardados.
 
 ## Conversas, respostas e contactos
 

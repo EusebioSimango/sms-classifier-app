@@ -7,6 +7,7 @@ data class IncomingSms(
     val category: SmsCategory? = null,
     val confidence: Float? = null,
     val outgoing: Boolean = false,
+    val unread: Boolean = false,
 ) {
     fun isSameAs(other: IncomingSms): Boolean =
         sender == other.sender &&

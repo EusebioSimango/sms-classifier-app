@@ -19,6 +19,25 @@ internal fun formatClock(millis: Long): String =
         .withZone(ZoneId.systemDefault())
         .format(Instant.ofEpochMilli(millis))
 
+private val SHORT_MONTHS = arrayOf(
+    "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+    "Jul", "Ago", "Set", "Out", "Nov", "Dez",
+)
+
+internal fun formatListStamp(
+    millis: Long,
+    zone: ZoneId = ZoneId.systemDefault(),
+    today: LocalDate = LocalDate.now(zone),
+): String {
+    val dateTime = Instant.ofEpochMilli(millis).atZone(zone)
+    val day = dateTime.toLocalDate()
+    return when (day) {
+        today -> DateTimeFormatter.ofPattern("HH:mm").format(dateTime)
+        today.minusDays(1) -> "Ontem"
+        else -> "${day.dayOfMonth} ${SHORT_MONTHS[day.monthValue - 1]}"
+    }
+}
+
 internal fun formatDayLabel(
     day: LocalDate,
     today: LocalDate = LocalDate.now(),

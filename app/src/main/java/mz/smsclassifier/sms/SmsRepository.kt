@@ -7,4 +7,5 @@ interface SmsRepository {
     suspend fun addIncoming(sms: IncomingSms)
     suspend fun addOutgoing(sms: IncomingSms)
     suspend fun upsertAll(messages: List<IncomingSms>)
+    suspend fun markRead(sender: String)
 }

@@ -16,6 +16,7 @@ class InboxSmsReader(context: Context) {
                     Telephony.Sms.ADDRESS,
                     Telephony.Sms.BODY,
                     Telephony.Sms.DATE,
+                    Telephony.Sms.READ,
                 ),
                 null,
                 null,
@@ -24,6 +25,7 @@ class InboxSmsReader(context: Context) {
                 val addressIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.ADDRESS)
                 val bodyIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.BODY)
                 val dateIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.DATE)
+                val readIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.READ)
                 buildList {
                     var count = 0
                     while (cursor.moveToNext() && count < limit) {
@@ -32,6 +34,7 @@ class InboxSmsReader(context: Context) {
                                 sender = cursor.getString(addressIdx).orEmpty(),
                                 body = cursor.getString(bodyIdx).orEmpty(),
                                 receivedAtMillis = cursor.getLong(dateIdx),
+                                unread = cursor.getInt(readIdx) == 0,
                             ),
                         )
                         count++

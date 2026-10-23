@@ -11,7 +11,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
+import androidx.core.app.Person
+import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.IconCompat
 import mz.smsclassifier.MainActivity
 import mz.smsclassifier.R
 
@@ -90,29 +93,29 @@ object IncomingSmsNotifier {
     }
 
     private fun build(context: Context, sms: IncomingSms, category: SmsCategory?): Notification {
-        val title = ContactDirectory(context).load().nameFor(sms.sender)
-            ?: sms.sender.ifBlank { "Mensagem" }
-        val open = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
-                Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                Intent.FLAG_ACTIVITY_SINGLE_TOP
-            putExtra(OPEN_SENDER_EXTRA, sms.sender)
-        }
-        val content = PendingIntent.getActivity(
-            context,
-            notificationId(sms.sender, sms.receivedAtMillis),
-            open,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
+        val contacts = ContactDirectory(context).load()
+        val who = contacts.nameFor(sms.sender) ?: sms.sender.ifBlank { "Mensagem" }
+        val title = category?.let { "$who - ${it.label}" } ?: who
+        val avatar = notificationAvatar(context, contacts.photoFor(sms.sender))
+        val them = Person.Builder()
+            .setName(title)
+            .setIcon(IconCompat.createWithBitmap(avatar))
+            .build()
+        val me = Person.Builder().setName("Eu").build()
+        val style = NotificationCompat.MessagingStyle(me)
+            .addMessage(sms.body.ifBlank { " " }, sms.receivedAtMillis, them)
+        val content = openConversation(context, sms)
         val locked = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_sms)
             .setContentTitle("Nova mensagem")
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .build()
-        return NotificationCompat.Builder(context, CHANNEL_ID)
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_sms)
+            .setLargeIcon(avatar)
+            .setStyle(style)
             .setContentTitle(title)
-            .setContentText(category?.label ?: "Nova mensagem")
+            .setContentText(sms.body)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
             .setPublicVersion(locked)
             .setContentIntent(content)
@@ -124,6 +127,51 @@ object IncomingSmsNotifier {
                 putString(EXTRA_SENDER, sms.sender)
                 putLong(EXTRA_AT, sms.receivedAtMillis)
             })
+        if (isReplyable(sms.sender)) {
+            builder.addAction(replyAction(context, sms, content))
+        }
+        return builder.build()
+    }
+
+    private fun openConversation(context: Context, sms: IncomingSms): PendingIntent {
+        val open = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra(OPEN_SENDER_EXTRA, sms.sender)
+        }
+        return PendingIntent.getActivity(
+            context,
+            notificationId(sms.sender, sms.receivedAtMillis),
+            open,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+    }
+
+    private fun replyAction(
+        context: Context,
+        sms: IncomingSms,
+        open: PendingIntent,
+    ): NotificationCompat.Action {
+        val granted = ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) ==
+            PackageManager.PERMISSION_GRANTED
+        if (!granted) {
+            return NotificationCompat.Action.Builder(R.drawable.ic_stat_reply, "Responder", open).build()
+        }
+        val reply = Intent(context, NotificationReplyReceiver::class.java).apply {
+            putExtra(OPEN_SENDER_EXTRA, sms.sender)
+        }
+        val mutable = if (Build.VERSION.SDK_INT >= 31) PendingIntent.FLAG_MUTABLE else 0
+        val pending = PendingIntent.getBroadcast(
+            context,
+            notificationId(sms.sender, sms.receivedAtMillis),
+            reply,
+            PendingIntent.FLAG_UPDATE_CURRENT or mutable,
+        )
+        val input = RemoteInput.Builder(REPLY_TEXT_KEY).setLabel("Responder").build()
+        return NotificationCompat.Action.Builder(R.drawable.ic_stat_reply, "Responder", pending)
+            .addRemoteInput(input)
+            .setAllowGeneratedReplies(false)
             .build()
     }
 
@@ -134,7 +182,7 @@ object IncomingSmsNotifier {
             "Mensagens novas",
             NotificationManager.IMPORTANCE_HIGH,
         ).apply {
-            description = "Aviso quando chega um SMS. O texto da mensagem não é mostrado."
+            description = "Aviso quando chega um SMS. O texto aparece com o telemóvel desbloqueado."
             lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         }
         manager(context)?.createNotificationChannel(channel)

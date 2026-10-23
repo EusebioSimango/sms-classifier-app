@@ -20,6 +20,19 @@ class SenderThreadsTest {
     }
 
     @Test
+    fun unreadCount_ignoresOutgoingAndReadMessages() {
+        val thread = groupBySender(
+            listOf(
+                IncomingSms("Ana", "oi", 1L, unread = true),
+                IncomingSms("Ana", "olá", 2L, unread = true),
+                IncomingSms("Ana", "ok", 3L, outgoing = true, unread = true),
+                IncomingSms("Ana", "lido", 4L),
+            ),
+        ).single()
+        assertEquals(2, thread.unreadCount)
+    }
+
+    @Test
     fun asPreview_truncatesLongBody() {
         val body = "a".repeat(90)
         assertEquals("a".repeat(79) + "…", body.asPreview(80))

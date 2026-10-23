@@ -49,6 +49,10 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".sms.NotificationReplyReceiver"
+            android:exported="false" />
+
         <provider
             android:name="ai.onnxruntime.TelemetryInitializer"
             android:authorities="${applicationId}.onnxruntime_telemetry_initializer"

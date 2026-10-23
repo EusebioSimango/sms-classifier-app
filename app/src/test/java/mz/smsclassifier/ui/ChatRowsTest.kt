@@ -25,6 +25,18 @@ class ChatRowsTest {
     }
 
     @Test
+    fun formatListStamp_showsClockTodayAndDateFurtherBack() {
+        val noon = today.atTime(15, 42).atZone(zone).toInstant().toEpochMilli()
+        assertEquals("15:42", formatListStamp(noon, zone, today))
+        val yesterday = today.minusDays(1).atTime(21, 5).atZone(zone).toInstant().toEpochMilli()
+        assertEquals("Ontem", formatListStamp(yesterday, zone, today))
+        val october = LocalDate.of(2026, 10, 21).atTime(8, 0).atZone(zone).toInstant().toEpochMilli()
+        assertEquals("21 Out", formatListStamp(october, zone, today))
+        val september = LocalDate.of(2026, 9, 20).atTime(8, 0).atZone(zone).toInstant().toEpochMilli()
+        assertEquals("20 Set", formatListStamp(september, zone, today))
+    }
+
+    @Test
     fun chatRows_dayLabelFollowsThatDaysBubblesInTheReversedList() {
         val rows = chatRows(
             messagesNewestFirst = listOf(

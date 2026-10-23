@@ -19,11 +19,15 @@ class RoomSmsRepository(
     }
 
     override suspend fun addOutgoing(sms: IncomingSms) {
-        dao.insert(sms.copy(outgoing = true).toEntity())
+        dao.insert(sms.copy(outgoing = true, unread = false).toEntity())
     }
 
     override suspend fun upsertAll(messages: List<IncomingSms>) {
         dao.insertAll(messages.map { it.toEntity() })
+    }
+
+    override suspend fun markRead(sender: String) {
+        dao.markRead(sender)
     }
 
     override suspend fun pendingClassification(modelVersion: String, limit: Int): List<PendingSms> =

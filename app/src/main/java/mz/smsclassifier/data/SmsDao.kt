@@ -28,4 +28,7 @@ interface SmsDao {
             "modelVersion = :modelVersion WHERE id = :id",
     )
     suspend fun updateClassification(id: Long, category: String, confidence: Float?, modelVersion: String)
+
+    @Query("UPDATE sms SET unread = 0 WHERE sender = :sender AND outgoing = 0")
+    suspend fun markRead(sender: String)
 }

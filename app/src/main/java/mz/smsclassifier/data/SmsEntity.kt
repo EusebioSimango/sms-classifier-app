@@ -21,6 +21,7 @@ data class SmsEntity(
     val confidence: Float? = null,
     val modelVersion: String? = null,
     val outgoing: Boolean = false,
+    val unread: Boolean = false,
 )
 
 fun SmsEntity.toIncomingSms(): IncomingSms =
@@ -31,6 +32,7 @@ fun SmsEntity.toIncomingSms(): IncomingSms =
         category = SmsCategory.fromStorage(category),
         confidence = confidence,
         outgoing = outgoing,
+        unread = unread,
     )
 
 fun IncomingSms.toEntity(): SmsEntity =
@@ -39,4 +41,5 @@ fun IncomingSms.toEntity(): SmsEntity =
         body = body,
         receivedAtMillis = receivedAtMillis,
         outgoing = outgoing,
+        unread = unread,
     )

@@ -10,6 +10,9 @@
 *.apk
 *.ap_
 *.aab
+*.idsig
+*.jks
+*.keystore
 *.dex
 *.class
 bin/

@@ -6,6 +6,7 @@ data class SenderThread(
 ) {
     val lastMessage: IncomingSms get() = messages.first()
     val count: Int get() = messages.size
+    val unreadCount: Int get() = messages.count { it.unread && !it.outgoing }
 }
 
 fun groupBySender(messages: List<IncomingSms>): List<SenderThread> =
