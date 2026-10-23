@@ -16,6 +16,9 @@ import mz.smsclassifier.SmsClassifierApp
 import mz.smsclassifier.settings.ThemeMode
 import mz.smsclassifier.sms.ContactDirectory
 import mz.smsclassifier.sms.IncomingSms
+import mz.smsclassifier.sms.SimChoice
+import mz.smsclassifier.sms.SimDirectory
+import mz.smsclassifier.sms.SimLine
 import mz.smsclassifier.sms.IncomingSmsNotifier
 import mz.smsclassifier.sms.VisibleConversation
 import mz.smsclassifier.sms.SavedContact
@@ -35,6 +38,8 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
     private val smsSender = app.smsSender
     val replySending = MutableStateFlow(false)
     val replyFailed = MutableStateFlow(false)
+    val simLines = MutableStateFlow<List<SimLine>>(emptyList())
+    val selectedSimId = MutableStateFlow<Int?>(null)
     private val composing = MutableStateFlow(false)
     private val contacts = MutableStateFlow<List<SavedContact>>(emptyList())
     private val hasPermission = MutableStateFlow(SmsPermissions.areGranted(application))
@@ -50,6 +55,7 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
                 if (sender != null) IncomingSmsNotifier.cancel(getApplication(), sender)
             }
             .launchIn(viewModelScope)
+        refreshSims()
     }
 
     val uiState: StateFlow<InboxUiState> = combine(
@@ -149,6 +155,23 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
         super.onCleared()
     }
 
+    fun refreshSims() {
+        val lines = SimDirectory(getApplication()).lines()
+        simLines.value = lines
+        val chosen = SimChoice.resolve(getApplication(), lines)
+        selectedSimId.value = chosen
+        if (chosen != null) SimChoice.save(getApplication(), chosen)
+    }
+
+    fun cycleSim() {
+        val lines = simLines.value
+        if (lines.size < 2) return
+        val index = lines.indexOfFirst { it.subscriptionId == selectedSimId.value }
+        val next = lines[(index + 1).mod(lines.size)]
+        selectedSimId.value = next.subscriptionId
+        SimChoice.save(getApplication(), next.subscriptionId)
+    }
+
     fun refreshContacts() {
         viewModelScope.launch(Dispatchers.IO) {
             contacts.value = ContactDirectory(getApplication()).load()
@@ -176,7 +199,9 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             replySending.value = true
             replyFailed.value = false
-            val sent = runCatching { smsSender.send(sender, text) }.getOrDefault(false)
+            val sent = runCatching {
+                smsSender.send(sender, text, selectedSimId.value)
+            }.getOrDefault(false)
             if (sent) {
                 repository.addOutgoing(
                     IncomingSms(

@@ -138,6 +138,10 @@ fun InboxRoute(
                 sendFailed = viewModel.replyFailed.collectAsStateWithLifecycle().value,
                 onBack = viewModel::closeComposer,
                 onContactsPermissionGranted = viewModel::refreshContacts,
+                simLines = viewModel.simLines.collectAsStateWithLifecycle().value,
+                selectedSimId = viewModel.selectedSimId.collectAsStateWithLifecycle().value,
+                onCycleSim = viewModel::cycleSim,
+                onSimsReady = viewModel::refreshSims,
                 onSend = viewModel::startConversation,
                 modifier = contentModifier,
             )
@@ -156,6 +160,10 @@ fun InboxRoute(
                     sendFailed = sendFailed,
                     onBack = viewModel::closeThread,
                     onSend = viewModel::sendReply,
+                    simLines = viewModel.simLines.collectAsStateWithLifecycle().value,
+                    selectedSimId = viewModel.selectedSimId.collectAsStateWithLifecycle().value,
+                    onCycleSim = viewModel::cycleSim,
+                    onSimsReady = viewModel::refreshSims,
                     modifier = contentModifier,
                 )
             }

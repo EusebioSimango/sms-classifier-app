@@ -46,6 +46,7 @@ import androidx.core.content.ContextCompat
 import android.content.pm.PackageManager
 import mz.smsclassifier.sms.IncomingSms
 import mz.smsclassifier.sms.SenderThread
+import mz.smsclassifier.sms.SimLine
 import mz.smsclassifier.sms.isReplyable
 
 @Composable
@@ -57,6 +58,10 @@ fun SenderThreadScreen(
     sendFailed: Boolean,
     onBack: () -> Unit,
     onSend: (String) -> Unit,
+    simLines: List<SimLine> = emptyList(),
+    selectedSimId: Int? = null,
+    onCycleSim: () -> Unit = {},
+    onSimsReady: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val replyable = isReplyable(thread.sender)
@@ -139,6 +144,10 @@ fun SenderThreadScreen(
                 draft = draft,
                 sending = sending,
                 sendFailed = sendFailed,
+                simLines = simLines,
+                selectedSimId = selectedSimId,
+                onCycleSim = onCycleSim,
+                onSimsReady = onSimsReady,
                 onDraftChange = { draft = it },
                 onSend = ::submit,
             )
@@ -214,9 +223,18 @@ private fun ReplyComposer(
     draft: String,
     sending: Boolean,
     sendFailed: Boolean,
+    simLines: List<SimLine>,
+    selectedSimId: Int?,
+    onCycleSim: () -> Unit,
+    onSimsReady: () -> Unit,
     onDraftChange: (String) -> Unit,
     onSend: () -> Unit,
 ) {
+    val simLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (granted) onSimsReady()
+    }
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -242,6 +260,12 @@ private fun ReplyComposer(
                     maxLines = 4,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                     keyboardActions = KeyboardActions(onSend = { onSend() }),
+                )
+                SimPicker(
+                    lines = simLines,
+                    selectedId = selectedSimId,
+                    onRequestPermission = { simLauncher.launch(Manifest.permission.READ_PHONE_STATE) },
+                    onCycle = onCycleSim,
                 )
                 FilledIconButton(
                     onClick = onSend,

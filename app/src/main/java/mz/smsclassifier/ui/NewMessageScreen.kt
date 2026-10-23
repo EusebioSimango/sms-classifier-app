@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import mz.smsclassifier.sms.SavedContact
+import mz.smsclassifier.sms.SimLine
 import mz.smsclassifier.sms.containsFolded
 import mz.smsclassifier.sms.isReplyable
 
@@ -51,6 +52,10 @@ fun NewMessageScreen(
     sendFailed: Boolean,
     onBack: () -> Unit,
     onContactsPermissionGranted: () -> Unit,
+    simLines: List<SimLine> = emptyList(),
+    selectedSimId: Int? = null,
+    onCycleSim: () -> Unit = {},
+    onSimsReady: () -> Unit = {},
     onSend: (number: String, body: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -61,6 +66,11 @@ fun NewMessageScreen(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
         if (granted) onContactsPermissionGranted()
+    }
+    val simLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (granted) onSimsReady()
     }
     val sendLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -156,6 +166,12 @@ fun NewMessageScreen(
                 maxLines = 4,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                 keyboardActions = KeyboardActions(onSend = { submit() }),
+            )
+            SimPicker(
+                lines = simLines,
+                selectedId = selectedSimId,
+                onRequestPermission = { simLauncher.launch(Manifest.permission.READ_PHONE_STATE) },
+                onCycle = onCycleSim,
             )
             FilledIconButton(onClick = ::submit, enabled = canSend) {
                 if (sending) {

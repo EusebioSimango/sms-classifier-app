@@ -28,7 +28,9 @@ class NotificationReplyReceiver : BroadcastReceiver() {
         val app = context.applicationContext as SmsClassifierApp
         app.applicationScope.launch {
             try {
-                val sent = runCatching { app.smsSender.send(sender, text) }.getOrDefault(false)
+                val lines = SimDirectory(app).lines()
+                val subscriptionId = SimChoice.resolve(app, lines)
+                val sent = runCatching { app.smsSender.send(sender, text, subscriptionId) }.getOrDefault(false)
                 if (sent) {
                     app.smsRepository.addOutgoing(
                         IncomingSms(

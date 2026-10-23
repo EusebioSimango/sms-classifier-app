@@ -57,7 +57,7 @@ Se a app instalar mas o interruptor de SMS estiver cinzento: Definições → Ap
 4. Enviar um SMS de teste para o número do dispositivo e confirmar que a conversa se actualiza (a app deve estar instalada e com permissão).
 5. No Logcat, filtrar `SmsReceiver`: não devem aparecer o corpo nem o número da mensagem.
 6. Fechar a app por completo e voltar a abrir: as conversas devem continuar (persistência local cifrada).
-7. Numa conversa com número de telefone, responder. A bolha enviada fica à direita e o separador do dia mostra **Hoje**. Um remetente como `Vodacom` não tem campo de resposta.
+7. Numa conversa com número de telefone, responder. A bolha enviada fica à direita e o separador do dia mostra **Hoje**. Um remetente como `Vodacom` não tem campo de resposta. Com dois cartões, o botão ao lado de enviar mostra o SIM; tocar alterna. Com um só cartão, esse botão não aparece.
 8. Na lista de mensagens, tocar em **+**. Escrever um número com pelo menos 8 dígitos e enviar. Se esse número já tiver conversa, a mensagem entra nela. Com a permissão de contactos, o nome da pessoa substitui o número na lista e no título.
 9. Conceder notificações, se pedidas. Enviar um SMS de teste com a aplicação fechada: aparece um aviso. No ecrã de bloqueio só diz «Nova mensagem». Desbloqueado, mostra o nome ou o número, a categoria e o texto. Num número de telefone, **Responder** envia a partir do aviso. Tocar no aviso abre essa conversa. Com a conversa já aberta, o aviso não aparece.
 

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.telephony.SmsManager
+import android.telephony.SubscriptionManager
 import java.util.UUID
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -15,10 +16,10 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 class SmsSender(context: Context) {
     private val appContext = context.applicationContext
 
-    suspend fun send(destination: String, body: String): Boolean {
+    suspend fun send(destination: String, body: String, subscriptionId: Int? = null): Boolean {
         if (!isReplyable(destination) || body.isBlank()) return false
         val address = replyAddress(destination)
-        val manager = smsManager()
+        val manager = smsManager(subscriptionId)
         val parts = manager.divideMessage(body)
         if (parts.isEmpty()) return false
         return suspendCancellableCoroutine { cont ->
@@ -69,13 +70,23 @@ class SmsSender(context: Context) {
         }
     }
 
-    private fun smsManager(): SmsManager =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    private fun smsManager(subscriptionId: Int?): SmsManager {
+        val base = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             appContext.getSystemService(SmsManager::class.java)
         } else {
             @Suppress("DEPRECATION")
             SmsManager.getDefault()
         }
+        if (subscriptionId == null || subscriptionId == SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
+            return base
+        }
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            base.createForSubscriptionId(subscriptionId)
+        } else {
+            @Suppress("DEPRECATION")
+            SmsManager.getSmsManagerForSubscriptionId(subscriptionId)
+        }
+    }
 
     private companion object {
         const val ACTION_SENT = "mz.smsclassifier.SMS_SENT"
