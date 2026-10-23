@@ -40,6 +40,10 @@ fun SenderThreadScreen(
             text = if (thread.count == 1) "1 SMS" else "${thread.count} SMS",
             style = MaterialTheme.typography.titleSmall,
         )
+        Text(
+            text = "A percentagem compara as categorias entre si. Não é a probabilidade de a categoria estar certa.",
+            style = MaterialTheme.typography.bodySmall,
+        )
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 24.dp),
@@ -68,6 +72,7 @@ private fun SmsCard(sms: IncomingSms) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(formatTimestamp(sms.receivedAtMillis), style = MaterialTheme.typography.bodySmall)
+            Text(classificationCaption(sms), style = MaterialTheme.typography.labelMedium)
             Text(sms.body, style = MaterialTheme.typography.bodyMedium)
         }
     }

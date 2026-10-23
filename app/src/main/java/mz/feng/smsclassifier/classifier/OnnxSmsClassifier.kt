@@ -9,7 +9,9 @@ import mz.feng.smsclassifier.sms.SmsCategory
 /** The ONNX graph embeds its own TF-IDF, so it must receive the raw SMS body. */
 class OnnxSmsClassifier(context: Context) : SmsClassifier {
     private val appContext = context.applicationContext
-    private val environment: OrtEnvironment by lazy { OrtEnvironment.getEnvironment() }
+    private val environment: OrtEnvironment by lazy {
+        OrtEnvironment.getEnvironment().also { it.setTelemetry(false) }
+    }
     private val session: OrtSession by lazy {
         val bytes = appContext.assets.open(ModelInfo.ASSET_PATH).use { it.readBytes() }
         environment.createSession(bytes, OrtSession.SessionOptions())

@@ -21,6 +21,8 @@ O prefixo `mz.feng` segue a convenção de nomes invertidos (*reverse DNS*) usad
 1. [Plano de desenvolvimento e estado](plano-desenvolvimento.md) — fases previstas, requisitos e o que já foi implementado.
 2. [Protótipo (Fases 1–2)](prototipo-fase-1.md) — arquitectura, persistência cifrada, decisões e limitações.
 3. [Guia de laboratório](guia-laboratorio.md) — compilação, instalação e testes no dispositivo.
+4. [Política de privacidade](politica-privacidade.md) — texto pronto a publicar.
+5. [Google Play](google-play.md) — permissões de SMS, formulários e lista de verificação.
 
 ## Como citar na monografia
 

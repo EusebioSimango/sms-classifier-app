@@ -100,6 +100,10 @@ fun ThreadRow(
                     style = MaterialTheme.typography.titleSmall,
                 )
                 Text(
+                    text = classificationCaption(thread.lastMessage),
+                    style = MaterialTheme.typography.labelMedium,
+                )
+                Text(
                     text = thread.lastMessage.body.asPreview(70),
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 2,

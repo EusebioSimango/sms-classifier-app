@@ -56,7 +56,7 @@ Dataset académico separado das mensagens pessoais; treino em scikit-learn; infe
 
 Ecrã de categorias com contagens; lista por categoria; detalhe; pesquisa por texto ou remetente.
 
-**Estado:** adiantada em parte. Os ecrãs de categorias, pesquisa, detalhe e temas já usam a categoria gravada pelo modelo; a heurística só aparece enquanto um SMS não está classificado. Falta mostrar a confiança e rever a usabilidade.
+**Estado:** concluída. Os ecrãs de categorias, pesquisa, detalhe e temas usam a categoria gravada pelo modelo. Cada mensagem mostra a confiança; sem confiança, a legenda indica classificação provisória. A percentagem é apresentada como comparação entre categorias, não como probabilidade.
 
 ### Fase 6 — Reclassificação, preferências e transparência (02/11 a 08/11/2026) · RF-11, RF-12, RF-13, RF-15, RF-17
 
