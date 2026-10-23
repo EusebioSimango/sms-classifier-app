@@ -66,7 +66,16 @@ ClassifyPendingSms → Room (categoria, confiança, versão do modelo)
 - A classificação corre num passo separado, depois de o SMS estar gravado. Uma falha do modelo nunca impede guardar a mensagem.
 - São reclassificados os SMS sem versão ou com uma versão diferente da actual. Assim, ao trocar o modelo, as mensagens antigas são reclassificadas automaticamente, e as que ficaram com a heurística voltam a ser tentadas.
 - A **confiança** é o *softmax* das margens do `LinearSVC`. Indica a força relativa da escolha entre as 8 classes, mas não é uma probabilidade calibrada.
-- A base passou para a versão 2 com uma migração que só acrescenta a coluna `modelVersion`, sem perder os SMS já guardados.
+- A base passou para a versão 2 com a coluna `modelVersion` e para a versão 3 com `outgoing`. Cada migração só acrescenta uma coluna e mantém os SMS já guardados.
+
+## Conversas, respostas e contactos
+
+A lista agrupa por remetente. Ao abrir a conversa, as bolhas seguem o padrão das aplicações de mensagens: recebidas à esquerda, enviadas à direita, hora `HH:mm` na bolha e um separador de dia (`Hoje`, `Ontem`, ou `Segunda-feira, 30 de março`; noutro ano inclui o ano).
+
+- Só um número de telefone (pelo menos 8 dígitos, sem letras) tem campo de resposta. `Vodacom`, `M-Pesa` e códigos curtos não têm.
+- O botão **+** na lista de mensagens abre "Nova mensagem". Se os últimos 9 dígitos já existirem numa conversa, a mensagem entra nessa conversa.
+- O envio usa `SmsManager` e a permissão `SEND_SMS`, pedida só no momento de enviar. A mensagem fica na base local com `outgoing = 1` (migração da base para a versão 3) e não passa pelo classificador. A aplicação de SMS do sistema pode não a mostrar, porque só a aplicação predefinida escreve na caixa de enviados.
+- Com `READ_CONTACTS`, opcional, o nome guardado no telemóvel substitui o número na lista, na pesquisa e no título da conversa. `+258841234567` e `841234567` correspondem à mesma pessoa. Sem a permissão, mostra-se o número.
 
 O pré-processamento da Fase 3 **não** é aplicado antes da inferência: o grafo ONNX já inclui o seu próprio TF-IDF, treinado sobre o texto em bruto. Dar-lhe texto transformado produziria termos que o modelo nunca viu. O pacote `nlp` fica preparado para um retreino com marcadores e *stopwords*.
 

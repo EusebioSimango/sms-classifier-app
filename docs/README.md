@@ -25,4 +25,4 @@ O identificador `mz.smsclassifier` segue a convenção de nomes invertidos (*rev
 
 ## Como citar na monografia
 
-No capítulo de desenvolvimento ou de metodologia, pode remeter-se para estes ficheiros como documentação do protótipo (por exemplo: «o estado das fases e o mapeamento de requisitos encontram-se no anexo técnico»). Os resultados do modelo de classificação (Fase 4) ainda não existem e **não devem ser inventados** neste material.
+No capítulo de desenvolvimento ou de metodologia, pode remeter-se para estes ficheiros como documentação do protótipo (por exemplo: «o estado das fases e o mapeamento de requisitos encontram-se no anexo técnico»). As métricas do modelo (precisão, matriz de confusão) pertencem à monografia e não são reproduzidas aqui.

@@ -31,6 +31,8 @@ A política [Use of SMS or Call Log permission groups](https://support.google.co
 - [x] `SmsReceiver` protegido com `BROADCAST_SMS`.
 - [x] `FLAG_SECURE` na actividade principal.
 - [x] R8 e redução de recursos activos na versão release; regras de ofuscação para o ONNX Runtime e o SQLCipher.
+- [x] `SEND_SMS` só é pedida quando a pessoa envia uma resposta ou uma mensagem nova para um número de telefone.
+- [x] `READ_CONTACTS` é opcional. O nome fica no telemóvel e não é partilhado.
 - [ ] Assinatura release com chave própria, guardada fora do repositório.
 - [ ] Publicar a política de privacidade num URL.
 - [ ] Conta de programador Google Play e preenchimento dos formulários.
