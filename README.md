@@ -12,6 +12,8 @@ A lista agrupa por conversa. Dá para responder a números de telefone, começar
 ./build.sh && ./install-debug.sh
 ```
 
+Para substituir o modelo, o ficheiro tem de ser `.onnx`, chamar-se `modelo_sms_mocambique.onnx` e ficar em `app/src/main/assets/models/`. O passo a passo está em [docs/guia-laboratorio.md](docs/guia-laboratorio.md).
+
 ## Documentação
 
 Índice e contexto da monografia: [docs/README.md](docs/README.md)
@@ -20,4 +22,4 @@ A lista agrupa por conversa. Dá para responder a números de telefone, começar
 | --- | --- | --- |
 | Plano e estado | [docs/plano-desenvolvimento.md](docs/plano-desenvolvimento.md) | Fases 0–8, requisitos e o que já está implementado |
 | Protótipo (Fases 1–2) | [docs/prototipo-fase-1.md](docs/prototipo-fase-1.md) | Arquitectura, persistência cifrada, privacidade e limitações |
-| Guia de laboratório | [docs/guia-laboratorio.md](docs/guia-laboratorio.md) | Compilação, instalação por USB e roteiro de teste |
+| Guia de laboratório | [docs/guia-laboratorio.md](docs/guia-laboratorio.md) | Compilação, instalação por USB, substituição do modelo e roteiro de teste |

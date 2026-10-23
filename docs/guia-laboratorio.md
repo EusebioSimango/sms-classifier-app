@@ -26,6 +26,18 @@ APK gerado:
 
 É um *build* de depuração, assinado com a chave de desenvolvimento. Não é a versão final da monografia (Fase 8).
 
+## Trocar o modelo
+
+A aplicação lê um único ficheiro, com este nome e nesta pasta:
+
+`app/src/main/assets/models/modelo_sms_mocambique.onnx`
+
+- A extensão tem de ser `.onnx`. É o formato que o Kotlin abre aqui, através do ONNX Runtime. Um `.pkl` é um objecto Python e não é lido. Serve só para retreinar e voltar a exportar.
+- O nome do ficheiro tem de ser exactamente `modelo_sms_mocambique.onnx`. Outro nome não é encontrado, a menos que se altere `ASSET_PATH` em `app/src/main/java/mz/smsclassifier/classifier/ModelInfo.kt`.
+- Substitui-se o ficheiro que já está nessa pasta. O grafo tem de aceitar o texto do SMS em bruto na entrada `input_text`, como o modelo actual.
+- Depois de substituir, muda-se `ModelInfo.VERSION` (hoje `sms-mz-2026.10.10`). Sem uma versão nova, as mensagens já classificadas não voltam a passar pelo modelo.
+- Corre-se outra vez `./build.sh && ./install-debug.sh`.
+
 ## Se o ADB recusar o dispositivo
 
 Mensagens `unauthorized` significam que o telemóvel ainda não autorizou este computador. Aceitar o diálogo de depuração USB no ecrã e voltar a correr `./install-debug.sh`.
