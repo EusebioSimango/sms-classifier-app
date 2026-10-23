@@ -4,7 +4,7 @@ Protótipo Android de categorização automática de SMS com processamento local
 
 Identificador da aplicação: `mz.smsclassifier`.
 
-A lista agrupa por conversa. Dá para responder a números de telefone, começar uma mensagem com **+** e, se os contactos forem autorizados, ver o nome da pessoa em vez do número. Códigos de operadora e de banco não têm resposta. O detalhe está em [docs/prototipo-fase-1.md](docs/prototipo-fase-1.md).
+A lista agrupa por conversa. Dá para responder a números de telefone, começar uma mensagem com **+** e, se os contactos forem autorizados, ver o nome da pessoa em vez do número. Com notificações autorizadas, um aviso aparece quando chega um SMS, sem o texto da mensagem. Códigos de operadora e de banco não têm resposta. O detalhe está em [docs/prototipo-fase-1.md](docs/prototipo-fase-1.md).
 
 ## Compilar e instalar
 

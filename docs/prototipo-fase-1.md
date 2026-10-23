@@ -76,6 +76,7 @@ A lista agrupa por remetente. Ao abrir a conversa, as bolhas seguem o padrão da
 - O botão **+** na lista de mensagens abre "Nova mensagem". Se os últimos 9 dígitos já existirem numa conversa, a mensagem entra nessa conversa.
 - O envio usa `SmsManager` e a permissão `SEND_SMS`, pedida só no momento de enviar. A mensagem fica na base local com `outgoing = 1` (migração da base para a versão 3) e não passa pelo classificador. A aplicação de SMS do sistema pode não a mostrar, porque só a aplicação predefinida escreve na caixa de enviados.
 - Com `READ_CONTACTS`, opcional, o nome guardado no telemóvel substitui o número na lista, na pesquisa e no título da conversa. `+258841234567` e `841234567` correspondem à mesma pessoa. Sem a permissão, mostra-se o número.
+- Com `POST_NOTIFICATIONS`, opcional, a chegada de um SMS mostra um aviso. No ecrã de bloqueio só aparece «Nova mensagem». Desbloqueado, o aviso mostra o nome ou o número e, quando o modelo termina, a categoria. O texto da mensagem não entra no aviso. Se essa conversa já estiver aberta, o aviso não aparece. Tocar no aviso abre a conversa. A aplicação de mensagens do sistema continua a mostrar o aviso dela.
 
 O pré-processamento da Fase 3 **não** é aplicado antes da inferência: o grafo ONNX já inclui o seu próprio TF-IDF, treinado sobre o texto em bruto. Dar-lhe texto transformado produziria termos que o modelo nunca viu. O pacote `nlp` fica preparado para um retreino com marcadores e *stopwords*.
 

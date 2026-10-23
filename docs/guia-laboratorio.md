@@ -47,6 +47,7 @@ Se a app instalar mas o interruptor de SMS estiver cinzento: Definições → Ap
 6. Fechar a app por completo e voltar a abrir: as conversas devem continuar (persistência local cifrada).
 7. Numa conversa com número de telefone, responder. A bolha enviada fica à direita e o separador do dia mostra **Hoje**. Um remetente como `Vodacom` não tem campo de resposta.
 8. Na lista de mensagens, tocar em **+**. Escrever um número com pelo menos 8 dígitos e enviar. Se esse número já tiver conversa, a mensagem entra nela. Com a permissão de contactos, o nome da pessoa substitui o número na lista e no título.
+9. Conceder notificações, se pedidas. Enviar um SMS de teste com a aplicação fechada: aparece um aviso. No ecrã de bloqueio só diz «Nova mensagem». Desbloqueado, mostra o nome ou o número e, pouco depois, a categoria. O texto não aparece. Tocar no aviso abre essa conversa. Com a conversa já aberta, o aviso não aparece.
 
 ## Emulador
 

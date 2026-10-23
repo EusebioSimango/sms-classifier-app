@@ -1,6 +1,6 @@
 # Política de privacidade — Categorizador SMS
 
-Última actualização: 21 de outubro de 2026.
+Última actualização: 23 de outubro de 2026.
 
 O Categorizador SMS é uma aplicação para Android que classifica mensagens SMS por categoria, inteiramente no telemóvel. Foi desenvolvida no âmbito de um trabalho de conclusão de curso.
 
@@ -9,7 +9,7 @@ O Categorizador SMS é uma aplicação para Android que classifica mensagens SMS
 - O texto, o remetente e a hora dos SMS recebidos.
 - Até 100 mensagens já existentes na caixa de entrada, lidas no momento em que a permissão é concedida.
 
-A aplicação não pede o número de telefone do utilizador, localização nem identificadores de publicidade. Se o utilizador autorizar os contactos, lê o nome e o número já guardados no telemóvel apenas para os mostrar na conversa. Essa lista não é enviada para lado nenhum.
+A aplicação não pede o número de telefone do utilizador, localização nem identificadores de publicidade. Se o utilizador autorizar os contactos, lê o nome e o número já guardados no telemóvel apenas para os mostrar na conversa. Essa lista não é enviada para lado nenhum. Se autorizar as notificações, um aviso local mostra o nome ou o número e a categoria quando chega um SMS. O texto da mensagem não entra nesse aviso, e no ecrã de bloqueio só aparece que há uma mensagem nova.
 
 ## Para que servem
 
