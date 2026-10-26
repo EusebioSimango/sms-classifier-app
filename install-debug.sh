@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 APK="$ROOT/app/build/outputs/apk/debug/app-debug.apk"
-ADB="${ANDROID_HOME:-/home/esimango/Android/Sdk}/platform-tools/adb"
+ADB="$HOME/Library/Android/sdk/platform-tools/adb"
 
 if [[ ! -f "$APK" ]]; then
   echo "APK em falta. A compilar…"
