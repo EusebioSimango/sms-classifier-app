@@ -17,9 +17,11 @@ class SmsReceiver : BroadcastReceiver() {
         app.applicationScope.launch {
             try {
                 val incoming = sms.copy(unread = !VisibleConversation.isOpen(sms.sender))
-                app.smsRepository.addIncoming(incoming)
-                PersistSmsWorker.enqueue(app)
-                IncomingSmsNotifier.show(app, sms)
+                val stored = app.smsRepository.addIncoming(incoming)
+                if (stored) {
+                    PersistSmsWorker.enqueue(app)
+                    IncomingSmsNotifier.show(app, sms)
+                }
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "SMS received")
                 }

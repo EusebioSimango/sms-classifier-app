@@ -23,3 +23,10 @@ fun phoneKey(raw: String): String {
     if (digits.length < 8) return ""
     return if (digits.length > 9) digits.takeLast(9) else digits
 }
+
+/** One conversation key. Numbers use the last 9 digits; names ignore case and punctuation. */
+fun partyKey(raw: String): String {
+    val phone = phoneKey(raw)
+    if (phone.isNotEmpty()) return "p:$phone"
+    return "n:" + raw.lowercase().filter { it.isLetterOrDigit() }
+}

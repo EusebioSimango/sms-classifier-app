@@ -33,6 +33,42 @@ class SenderThreadsTest {
     }
 
     @Test
+    fun groupBySender_mergesTheSameNumber() {
+        val threads = groupBySender(
+            listOf(
+                IncomingSms("+258841234567", "um", 1_000L),
+                IncomingSms("841234567", "dois", 2_000L),
+            ),
+        )
+        assertEquals(1, threads.size)
+        assertEquals(2, threads[0].count)
+        assertEquals("841234567", threads[0].sender)
+    }
+
+    @Test
+    fun collapseDuplicates_dropsTheSameTextInsideTheWindow() {
+        val thread = groupBySender(
+            listOf(
+                IncomingSms("M-Pesa", "saldo", 1_000L, unread = true),
+                IncomingSms("MPESA", "saldo", 20_000L),
+            ),
+        ).single()
+        assertEquals(1, thread.count)
+        assertEquals(true, thread.messages.single().unread)
+    }
+
+    @Test
+    fun collapseDuplicates_keepsTheSameTextAfterTheWindow() {
+        val thread = groupBySender(
+            listOf(
+                IncomingSms("MPESA", "saldo", 1_000L),
+                IncomingSms("MPESA", "saldo", 40_000L),
+            ),
+        ).single()
+        assertEquals(2, thread.count)
+    }
+
+    @Test
     fun asPreview_truncatesLongBody() {
         val body = "a".repeat(90)
         assertEquals("a".repeat(79) + "…", body.asPreview(80))

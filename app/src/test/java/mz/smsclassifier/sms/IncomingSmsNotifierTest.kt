@@ -10,6 +10,7 @@ class IncomingSmsNotifierTest {
     fun sameParty_matchesCountryCodeAndLocalNumber() {
         assertTrue(sameParty("+258841234567", "841234567"))
         assertTrue(sameParty("Vodacom", "Vodacom"))
+        assertTrue(sameParty("M-Pesa", "MPESA"))
         assertFalse(sameParty("Vodacom", "841234567"))
         assertFalse(sameParty(null, "841234567"))
     }

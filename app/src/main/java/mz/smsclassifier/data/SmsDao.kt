@@ -29,6 +29,11 @@ interface SmsDao {
     )
     suspend fun updateClassification(id: Long, category: String, confidence: Float?, modelVersion: String)
 
-    @Query("UPDATE sms SET unread = 0 WHERE sender = :sender AND outgoing = 0")
-    suspend fun markRead(sender: String)
+    @Query(
+        "SELECT * FROM sms WHERE receivedAtMillis BETWEEN :start AND :end",
+    )
+    suspend fun receivedBetween(start: Long, end: Long): List<SmsEntity>
+
+    @Query("UPDATE sms SET unread = 0 WHERE sender IN (:senders) AND outgoing = 0")
+    suspend fun markRead(senders: Collection<String>)
 }

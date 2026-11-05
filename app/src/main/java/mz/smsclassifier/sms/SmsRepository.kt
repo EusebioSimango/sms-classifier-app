@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface SmsRepository {
     val messages: Flow<List<IncomingSms>>
-    suspend fun addIncoming(sms: IncomingSms)
+    suspend fun addIncoming(sms: IncomingSms): Boolean
     suspend fun addOutgoing(sms: IncomingSms)
     suspend fun upsertAll(messages: List<IncomingSms>)
-    suspend fun markRead(sender: String)
+    suspend fun markRead(senders: Collection<String>)
 }

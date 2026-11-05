@@ -13,6 +13,11 @@ enum class ThemeMode {
     DARK,
 }
 
+enum class SmsHome {
+    MESSAGES,
+    CATEGORIES,
+}
+
 private val Context.themeDataStore by preferencesDataStore(name = "settings")
 
 class ThemePreferences(context: Context) {
@@ -23,11 +28,21 @@ class ThemePreferences(context: Context) {
             ?: ThemeMode.SYSTEM
     }
 
+    val smsHome: Flow<SmsHome> = dataStore.data.map { prefs ->
+        prefs[KEY_SMS_HOME]?.let { runCatching { SmsHome.valueOf(it) }.getOrNull() }
+            ?: SmsHome.MESSAGES
+    }
+
     suspend fun setThemeMode(mode: ThemeMode) {
         dataStore.edit { it[KEY_THEME] = mode.name }
     }
 
+    suspend fun setSmsHome(home: SmsHome) {
+        dataStore.edit { it[KEY_SMS_HOME] = home.name }
+    }
+
     companion object {
         private val KEY_THEME = stringPreferencesKey("theme_mode")
+        private val KEY_SMS_HOME = stringPreferencesKey("sms_home")
     }
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import mz.smsclassifier.SmsClassifierApp
+import mz.smsclassifier.settings.SmsHome
 import mz.smsclassifier.settings.ThemeMode
 import mz.smsclassifier.sms.ContactDirectory
 import mz.smsclassifier.sms.IncomingSms
@@ -26,8 +27,8 @@ import mz.smsclassifier.sms.SmsCategory
 import mz.smsclassifier.sms.SmsPermissions
 import mz.smsclassifier.sms.groupBySender
 import mz.smsclassifier.sms.isReplyable
-import mz.smsclassifier.sms.phoneKey
 import mz.smsclassifier.sms.replyAddress
+import mz.smsclassifier.sms.sameParty
 
 class InboxViewModel(application: Application) : AndroidViewModel(application) {
     private val app = application as SmsClassifierApp
@@ -65,11 +66,12 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
         combine(selectedCategory, currentTab, searchQuery) { category, tab, query ->
             Triple(category, tab, query)
         },
-        themePreferences.themeMode,
+        combine(themePreferences.themeMode, themePreferences.smsHome) { mode, home -> mode to home },
         combine(composing, contacts) { writing, saved -> writing to saved },
-    ) { first, second, themeMode, composeState ->
+    ) { first, second, appearance, composeState ->
         val (messages, permitted, sender) = first
         val (category, tab, query) = second
+        val (themeMode, smsHome) = appearance
         val (writing, saved) = composeState
         InboxUiState(
             hasPermission = permitted,
@@ -81,6 +83,7 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
             themeMode = themeMode,
             composing = writing,
             contacts = saved,
+            messagesFirst = smsHome == SmsHome.MESSAGES,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -128,8 +131,12 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
     fun openThread(sender: String) {
         composing.value = false
         selectedSender.value = sender
+        val senders = uiState.value.threads
+            .firstOrNull { thread -> thread.senders.any { sameParty(it, sender) } }
+            ?.senders
+            ?: listOf(sender)
         viewModelScope.launch(Dispatchers.IO) {
-            repository.markRead(sender)
+            repository.markRead(senders)
         }
     }
 
@@ -186,7 +193,7 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
     fun startConversation(number: String, body: String) {
         val typed = number.trim()
         if (!isReplyable(typed)) return
-        val known = uiState.value.threads.firstOrNull { phoneKey(it.sender) == phoneKey(typed) }?.sender
+        val known = uiState.value.threads.firstOrNull { sameParty(it.sender, typed) }?.sender
         val sender = known ?: replyAddress(typed)
         transmit(sender, body.trim()) {
             composing.value = false
@@ -225,5 +232,11 @@ class InboxViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch { themePreferences.setThemeMode(mode) }
+    }
+
+    fun setMessagesFirst(messagesFirst: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setSmsHome(if (messagesFirst) SmsHome.MESSAGES else SmsHome.CATEGORIES)
+        }
     }
 }

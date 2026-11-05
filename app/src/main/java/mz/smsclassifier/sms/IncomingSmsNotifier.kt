@@ -37,10 +37,7 @@ object VisibleConversation {
 
 fun sameParty(open: String?, incoming: String): Boolean {
     if (open == null) return false
-    if (open == incoming) return true
-    val left = phoneKey(open)
-    val right = phoneKey(incoming)
-    return left.isNotEmpty() && left == right
+    return partyKey(open) == partyKey(incoming)
 }
 
 fun notificationId(sender: String, receivedAtMillis: Long): Int {

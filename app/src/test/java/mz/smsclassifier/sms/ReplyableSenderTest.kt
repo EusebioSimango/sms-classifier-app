@@ -34,6 +34,8 @@ class ReplyableSenderTest {
         assertEquals("841234567", phoneKey("+258 84 123 4567"))
         assertEquals(phoneKey("+258841234567"), phoneKey("841234567"))
         assertEquals("", phoneKey("Vodacom"))
+        assertEquals(partyKey("M-Pesa"), partyKey("MPESA"))
+        assertEquals("p:841234567", partyKey("+258841234567"))
     }
 
     @Test

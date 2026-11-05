@@ -64,22 +64,35 @@ fun CategoryCard(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Icon(
-                imageVector = summary.category.icon(),
-                contentDescription = summary.category.label,
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Text(summary.category.label, style = MaterialTheme.typography.titleSmall)
-            Text(
-                text = if (summary.count == 1) "1 SMS" else "${summary.count} SMS",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            summary.lastAtMillis?.let { millis ->
-                Text(formatClock(millis), style = MaterialTheme.typography.labelSmall)
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Icon(
+                    imageVector = summary.category.icon(),
+                    contentDescription = summary.category.label,
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+                Text(summary.category.label, style = MaterialTheme.typography.titleSmall)
+                Text(
+                    text = if (summary.count == 1) "1 SMS" else "${summary.count} SMS",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                summary.lastAtMillis?.let { millis ->
+                    Text(formatClock(millis), style = MaterialTheme.typography.labelSmall)
+                }
+            }
+            if (summary.unreadCount > 0) {
+                Badge(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(10.dp),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ) {
+                    Text(if (summary.unreadCount > 9) "9+" else summary.unreadCount.toString())
+                }
             }
         }
     }

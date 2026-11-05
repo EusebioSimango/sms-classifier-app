@@ -146,7 +146,9 @@ fun InboxRoute(
                 modifier = contentModifier,
             )
             !uiState.hasPermission -> PermissionGateScreen(
-                onRequestPermissions = { launcher.launch(SmsPermissions.required) },
+                onRequestPermissions = {
+                    launcher.launch(SmsPermissions.required + Manifest.permission.READ_CONTACTS)
+                },
                 modifier = contentModifier,
             )
             selectedThread != null -> {
@@ -192,16 +194,20 @@ fun InboxRoute(
             )
             uiState.currentTab == AppTab.SETTINGS -> SettingsScreen(
                 themeMode = uiState.themeMode,
+                messagesFirst = uiState.messagesFirst,
                 onThemeModeChange = viewModel::setThemeMode,
+                onMessagesFirstChange = viewModel::setMessagesFirst,
                 modifier = contentModifier,
             )
             else -> MessagesHomeScreen(
                 summaries = uiState.categorySummaries,
                 recentThreads = uiState.threads,
                 searchQuery = uiState.searchQuery,
+                messagesFirst = uiState.messagesFirst,
                 onSearchQueryChange = viewModel::setSearchQuery,
                 onOpenCategory = viewModel::openCategory,
                 onOpenThread = { viewModel.openThread(it.sender) },
+                onMessagesFirstChange = viewModel::setMessagesFirst,
                 nameOf = uiState::nameFor,
                 photoOf = uiState::photoFor,
                 modifier = contentModifier,

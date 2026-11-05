@@ -6,7 +6,7 @@ Instruções para reproduzir o protótipo num computador com Android SDK e num t
 
 - JDK 17 (ou o JBR do Android Studio)
 - Android SDK com plataforma API 36
-- `ANDROID_HOME` (por omissão nos *scripts*: `/home/esimango/Android/Sdk`)
+- `ANDROID_HOME`, se já estiver definido. Sem isso, os *scripts* procuram o SDK em `$HOME/Library/Android/sdk` (Mac), `$HOME/Android/Sdk` (Linux) ou `%LOCALAPPDATA%\Android\Sdk` (Windows, no Git Bash).
 - Telemóvel com depuração USB activa, ou emulador
 
 ## Compilar e instalar

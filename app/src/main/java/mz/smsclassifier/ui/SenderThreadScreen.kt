@@ -204,13 +204,6 @@ private fun MessageBubble(sms: IncomingSms) {
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                 )
             }
-            if (!outgoing) {
-                Text(
-                    text = classificationCaption(sms),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
         }
     }
 }

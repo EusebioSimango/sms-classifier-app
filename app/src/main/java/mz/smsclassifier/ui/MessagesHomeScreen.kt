@@ -1,8 +1,8 @@
 package mz.smsclassifier.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,7 +11,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import mz.smsclassifier.sms.SenderThread
@@ -23,9 +25,11 @@ fun MessagesHomeScreen(
     summaries: List<CategorySummary>,
     recentThreads: List<SenderThread>,
     searchQuery: String,
+    messagesFirst: Boolean,
     onSearchQueryChange: (String) -> Unit,
     onOpenCategory: (SmsCategory) -> Unit,
     onOpenThread: (SenderThread) -> Unit,
+    onMessagesFirstChange: (Boolean) -> Unit,
     nameOf: (String) -> String? = { null },
     photoOf: (String) -> String? = { null },
     modifier: Modifier = Modifier,
@@ -64,14 +68,30 @@ fun MessagesHomeScreen(
                 placeholder = { Text("Pesquisar mensagens") },
             )
         }
-        item {
-            Text("CATEGORIAS", style = MaterialTheme.typography.labelMedium)
+        if (!messagesFirst) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("CATEGORIAS", style = MaterialTheme.typography.labelMedium)
+                    TextButton(onClick = { onMessagesFirstChange(true) }) { Text("Ocultar") }
+                }
+            }
+            item {
+                CategoryGrid(
+                    summaries = summaries,
+                    onOpenCategory = onOpenCategory,
+                )
+            }
         }
-        item {
-            CategoryGrid(
-                summaries = summaries,
-                onOpenCategory = onOpenCategory,
-            )
+        if (messagesFirst) {
+            item {
+                TextButton(onClick = { onMessagesFirstChange(false) }) {
+                    Text("Mostrar categorias")
+                }
+            }
         }
         item {
             Text("MENSAGENS RECENTES", style = MaterialTheme.typography.labelMedium)

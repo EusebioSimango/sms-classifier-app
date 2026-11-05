@@ -25,7 +25,7 @@ private val disclosurePoints = listOf(
     "Para quê" to "Apenas para classificar cada mensagem por categoria (por exemplo carteira móvel, operadora ou suspeita) e para a pesquisa.",
     "Onde fica" to "A classificação fica só neste telemóvel, numa base de dados cifrada. A aplicação não tem internet e não partilha os SMS com ninguém.",
     "Respostas" to "Se responderes a um número de telefone, ou escreveres uma mensagem nova, essa mensagem sai por SMS, pelo operador, só para esse número. Com dois cartões, podes escolher o SIM. Códigos de operadora e bancos não têm campo de resposta.",
-    "Contactos" to "Se autorizares, o nome e a fotografia do contacto aparecem na conversa em vez de só o número. A lista de contactos não sai do aparelho. Podes usar a aplicação sem esta permissão.",
+    "Contactos" to "No início pedimos também os contactos, para mostrar o nome e a fotografia em vez de só o número. Podes recusar e continuar. A lista de contactos não sai do aparelho.",
     "Notificações" to "Se autorizares, um aviso aparece quando chega um SMS. No ecrã de bloqueio só diz que há uma mensagem nova. Desbloqueado, mostra o nome ou o número, a categoria e o texto. Num número de telefone podes responder a partir do aviso. Podes recusar e continuar a usar a aplicação.",
     "O teu controlo" to "Podes retirar a permissão a qualquer momento nas definições do Android. Ao desinstalar a aplicação, os dados são apagados.",
 )
