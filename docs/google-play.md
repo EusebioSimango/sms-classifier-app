@@ -29,7 +29,6 @@ A política [Use of SMS or Call Log permission groups](https://support.google.co
 - [x] `usesCleartextTraffic="false"`.
 - [x] Base cifrada com SQLCipher; chave aleatória em `EncryptedSharedPreferences`.
 - [x] `SmsReceiver` protegido com `BROADCAST_SMS`.
-- [x] `FLAG_SECURE` na actividade principal.
 - [x] R8 e redução de recursos activos na versão release; regras de ofuscação para o ONNX Runtime e o SQLCipher.
 - [x] `SEND_SMS` só é pedida quando a pessoa envia uma resposta ou uma mensagem nova para um número de telefone.
 - [x] `READ_PHONE_STATE` é opcional e só é pedida ao escolher o SIM, quando o telemóvel tem duas ranhuras. Serve para listar a ranhura e a operadora. O número da linha não é lido.

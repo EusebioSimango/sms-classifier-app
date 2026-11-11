@@ -93,7 +93,6 @@ Alinhado com o processamento local (RNF do plano) e com o contexto académico:
 - Sem permissão `INTERNET`. O ONNX Runtime declara-a para telemetria; é removida no manifesto com `tools:node="remove"`. A telemetria fica desactivada com `setTelemetry(false)` e o `TelemetryInitializer` é retirado do manifesto.
 - `android:allowBackup="false"`, reforçado com `data_extraction_rules.xml` e `backup_rules.xml`, que excluem base de dados, preferências e ficheiros da cópia de segurança e da transferência entre dispositivos.
 - `android:usesCleartextTraffic="false"`.
-- `FLAG_SECURE` na `MainActivity` (o ecrã recente e as capturas do sistema não mostram o conteúdo das mensagens; ferramentas de captura do computador também podem falhar — comportamento esperado).
 - O receptor **não** regista remetente, corpo nem hora no Logcat. Em *debug* pode aparecer apenas a linha `SMS received`, sem dados pessoais.
 - Antes de pedir a permissão de SMS, a aplicação mostra um aviso destacado: o que é lido, para quê, onde fica e como o utilizador pode retirar a permissão.
 - A versão release usa R8 e redução de recursos.
